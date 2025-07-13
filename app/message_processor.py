@@ -8,7 +8,6 @@ from app.database import SessionLocal
 from app.database import get_db
 from app.models import DocumentData
 from fastapi import Depends
-import ollama
 from app.utils import chat
 
 
