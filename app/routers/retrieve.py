@@ -57,11 +57,9 @@ def get_answer(question:str,role:str,db:Session = Depends(get_db))->str:
             required_keywords = [keyword.lower() for keyword in required_keywords]
             chunk_ids = get_chunk_ids(required_keywords , db,role = role,required_match=1)
             para = get_para(chunk_ids,db)
-            print(para)
             context.append(para)
             result = llm.get_answer_from_para(paragraph=para,question=question)
             answers.append(result)
-        
         return llm.choose_correct_response(question,context,answers)
     except Exception as e:
         print(e)
