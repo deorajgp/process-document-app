@@ -44,7 +44,7 @@ def get_answer(question:str,role:str,db:Session = Depends(get_db))->str:
     then get chunk ids from the db relating to the question keywords
     add the chunks context to final context
     add answers to answers list 
-    fimmaly compare the answers to the context thus generated
+    finally compare the answers to the context thus generated
     """
     try:
         llm = llmchat(model="gemini-1.5-pro")
