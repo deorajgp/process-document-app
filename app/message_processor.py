@@ -1,14 +1,8 @@
-import uuid
 import PyPDF2
-import os
-import asyncio
-import aiofiles
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
-from app.database import get_db
 from app.models import DocumentData
-from fastapi import Depends
-from app.utils import chat
+from app.utils.chat import llmchat
 
 
 #dividing based on given chunk size and overlap
@@ -100,6 +94,7 @@ async def store_chunks_in_db(chunks, document_name, role):
     pass  # TODO: Implement database storage logic
     db:Session = SessionLocal()
     try:
+        chat = llmchat(model="gemini-1.5-pro")
         chunk_number = 1
         for chunk in chunks:
             keywords_from_chunks = chat.get_keywords_from_ollama(chunk)

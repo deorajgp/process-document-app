@@ -1,9 +1,8 @@
 from fastapi import APIRouter,Depends
 from sqlalchemy.orm import Session
 from app.models import DocumentData
-from app.utils import chat
+from app.utils.chat import llmchat
 from app.database import get_db
-
 
 router = APIRouter(
     prefix = "/retrieve",
@@ -39,17 +38,31 @@ def get_chunk_ids(required_keywords:list , db:Session,role:str ,required_match:i
 #retriever for the user query
 @router.get("/")
 def get_answer(question:str,role:str,db:Session = Depends(get_db))->str:
+    """
+    first generate synonym questions for better retrieval
+    then get keywords from the question 
+    then get chunk ids from the db relating to the question keywords
+    add the chunks context to final context
+    add answers to answers list 
+    fimmaly compare the answers to the context thus generated
+    """
     try:
-        required_keywords = chat.get_keywords_from_ollama(question)
-        required_keywords = [keyword.lower() for keyword in required_keywords]
-        chunk_ids = get_chunk_ids(required_keywords , db,role = role,required_match=1)
-        #print(chunk_ids)
-        if len(chunk_ids)==0:
-            return "Nothng found from our side"
-        para = get_para(chunk_ids,db)
-        #print(para)
-        result = chat.get_answer_from_para(paragraph=para,question=question)
-        return result
+        llm = llmchat(model="gemini-1.5-pro")
+        questions = llm.generate_questions(question)
+        questions.append(question)
+        answers = []
+        context = []
+        for question in questions:
+            required_keywords = llm.get_keywords_from_ollama(question)
+            required_keywords = [keyword.lower() for keyword in required_keywords]
+            chunk_ids = get_chunk_ids(required_keywords , db,role = role,required_match=1)
+            para = get_para(chunk_ids,db)
+            print(para)
+            context.append(para)
+            result = llm.get_answer_from_para(paragraph=para,question=question)
+            answers.append(result)
+        
+        return llm.choose_correct_response(question,context,answers)
     except Exception as e:
         print(e)
         return "Server Error"

@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from app.subscriber import start_subscriber
 from app.routers import upload, user_role , retrieve
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
