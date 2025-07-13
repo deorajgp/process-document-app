@@ -1,58 +1,58 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# Byte-compiled / optimized / DLL files (recursively)
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
 
 # Virtual environment
 venv/
-.env/
+.env
 .env.*
+**/.env
+**/.env.*
 
-# Ignore everything inside uploads/
-uploads/*
-# But keep this placeholder file (see step 2)
-!uploads/.gitkeep
+# Ignore everything inside uploads/, even nested
+uploads/**
+!uploads/.gitkeep  # exception for .gitkeep
 
-# Distribution / packaging
+# Packaging
 build/
 dist/
-*.egg-info/
+**/*.egg-info/
 *.egg
 
-# VS Code and IDE settings
+# IDE settings (recursively)
 .vscode/
 .idea/
+**/.vscode/
+**/.idea/
 
-# Logs and runtime
-*.log
-*.pid
-*.db
-*.sqlite3
+# Logs, runtime, database
+**/*.log
+**/*.pid
+**/*.db
+**/*.sqlite3
 
-# Mypy, coverage, and test reports
+# Testing, type-checking
 .mypy_cache/
 .pytest_cache/
 .coverage
 htmlcov/
 .cache/
+.pyre/
 
-# Jupyter Notebooks
-.ipynb_checkpoints
+# Notebooks
+**/.ipynb_checkpoints
 
-# OS files
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-# Pydantic compiled models (if any)
-*.pyd
+# Compiled extensions
+**/*.pyd
 
 # Docker
-**/__pycache__/
 docker-compose.override.yml
 
-# Pyre type checker
-.pyre/
-
-# Static & Media (if applicable)
+# Static/Media (if used)
 staticfiles/
 media/
